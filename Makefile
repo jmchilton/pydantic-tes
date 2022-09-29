@@ -9,7 +9,7 @@ VENV?=.venv
 # Source virtualenv to execute command (flake8, sphinx, twine, etc...)
 IN_VENV=if [ -f $(VENV)/bin/activate ]; then . $(VENV)/bin/activate; fi;
 # TODO: add this upstream as a remote if it doesn't already exist.
-UPSTREAM?=jmchilton
+UPSTREAM?=origin
 SOURCE_DIR?=pydantictes
 BUILD_SCRIPTS_DIR=scripts
 DEV_RELEASE?=0
