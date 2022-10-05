@@ -6,7 +6,7 @@ History
 .. to_doc
 
 ---------------------
-0.1.3.dev0
+0.1.3 (2022-10-05)
 ---------------------
 
 * Another attempt at publishing types.
