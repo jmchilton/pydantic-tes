@@ -2,7 +2,8 @@
 #   filename:  https://raw.githubusercontent.com/ga4gh/task-execution-schemas/develop/openapi/task_execution_service.openapi.yaml
 #   timestamp: 2022-09-28T18:20:32+00:00
 
-from __future__ import annotations
+# Not available in Python 3.6...
+# from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
