@@ -9,6 +9,8 @@ History
 0.1.2.dev0
 ---------------------
 
+* Add support for Python 3.6.
+* Add py.typed to package.
 
 ---------------------
 0.1.1 (2022-09-29)
