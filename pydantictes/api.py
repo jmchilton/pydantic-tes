@@ -98,6 +98,8 @@ class TesClient:
             for log in logs:
                 if "outputs" not in log:
                     log["outputs"] = []
+                if "logs" not in log:
+                    log["logs"] = []
                 if "logs" in log:
                     for inner_log in log["logs"]:
                         if "exit_code" not in inner_log:
