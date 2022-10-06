@@ -6,10 +6,10 @@ History
 .. to_doc
 
 ---------------------
-0.2.0.dev0
+0.1.4.dev0
 ---------------------
 
-    
+* Further hacking around funnel responses to produce validating responses.
 
 ---------------------
 0.1.3 (2022-10-05)
