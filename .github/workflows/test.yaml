@@ -6,6 +6,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.10']
+        server-target: ["DEPLOY", "https://csc-tesk-noauth.rahtiapp.fi"]
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v3
@@ -16,8 +17,11 @@ jobs:
       with:
         go-version: ^1.13
     - name: Install dependencies
+      if: ${{ matrix.server-target == "DEPLOY" }}
       run: |
           python3 -m pip install --upgrade pip setuptools
           pip install pytest -rrequirements.txt
     - name: Test with tox
-      run: FUNNEL_SERVER_TARGET=DEPLOY pytest -s test
+      run: pytest -s test
+      env:
+        FUNNEL_SERVER_TARGET: ${{ matrix.server-target }}
