@@ -62,6 +62,10 @@ class TesClient:
     def service_info(self) -> TesServiceInfo:
         url = self._build_url("service-info")
         response = requests.get(url, headers=self._headers)
+        if response.status_code == 404:
+            # funnel
+            url = self._build_url("tasks/service-info")
+        response = requests.get(url, headers=self._headers)
         raise_for_status(response)
         response_dict = response.json()
         self._hack_service_info_around_funnel(response_dict)
