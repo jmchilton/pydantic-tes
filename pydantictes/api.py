@@ -1,6 +1,7 @@
 from typing import (
     Union,
 )
+from urllib.parse import urljoin
 
 import requests
 
@@ -15,14 +16,26 @@ from .models import (
 HasTaskId = Union[TesCreateTaskResponse, TesTask, str]
 
 
+class RequestResponseError(Exception):
+    pass
+
+
+def raise_for_status(response):
+    try:
+        response.raise_for_status()
+    except Exception as e:
+        raise RequestResponseError(f"Plain text response is '{response.text}'") from e
+
+
 class TesClient:
     def __init__(self, url: str):
         self._url = url
+        self._headers = {"Content-Type": "application/json"}
 
     def create_task(self, task: TesTask) -> TesCreateTaskResponse:
         url = self._build_url("tasks")
-        response = requests.post(url, data=task.json())
-        response.raise_for_status()
+        response = requests.post(url, data=task.json(), headers=self._headers)
+        raise_for_status(response)
         return TesCreateTaskResponse(**response.json())
 
     def get_task(self, has_task_id: HasTaskId, view) -> TesTask:
@@ -31,8 +44,9 @@ class TesClient:
         response = requests.get(
             url,
             params={"view": view},
+            headers=self._headers,
         )
-        response.raise_for_status()
+        raise_for_status(response)
         response_dict = response.json()
         self._hack_task_response_around_funnel(response_dict)
         return TesTask(**response_dict)
@@ -40,22 +54,27 @@ class TesClient:
     def cancel_task(self, has_task_id: HasTaskId) -> TesCancelTaskResponse:
         task_id = self._get_task_id(has_task_id)
         url = self._build_url(f"tasks/{task_id}:cancel")
-        response = requests.post(url)
-        response.raise_for_status()
-        return TesCancelTaskResponse(**response.json())
+        response = requests.post(url, headers=self._headers)
+        raise_for_status(response)
+        response_json = response.json() if response.text else {}
+        return TesCancelTaskResponse(**response_json)
 
     def service_info(self) -> TesServiceInfo:
-        url = self._build_url("/tasks/service-info")
-        response = requests.get(url)
-        response.raise_for_status()
+        url = self._build_url("service-info")
+        response = requests.get(url, headers=self._headers)
+        if response.status_code == 404:
+            # funnel
+            url = self._build_url("tasks/service-info")
+        response = requests.get(url, headers=self._headers)
+        raise_for_status(response)
         response_dict = response.json()
         self._hack_service_info_around_funnel(response_dict)
         return TesServiceInfo(**response_dict)
 
     def list_tasks(self) -> TesListTasksResponse:
         url = self._build_url("tasks")
-        response = requests.get(url)
-        response.raise_for_status()
+        response = requests.get(url, headers=self._headers)
+        raise_for_status(response)
         response_dict = response.json()
         self._hack_list_response_around_funnel(response_dict)
         return TesListTasksResponse(**response_dict)
@@ -106,4 +125,4 @@ class TesClient:
                             inner_log["exit_code"] = -255
 
     def _build_url(self, path: str) -> str:
-        return f"{self._url}/v1/{path}"
+        return urljoin(self._url, f"v1/{path}")
