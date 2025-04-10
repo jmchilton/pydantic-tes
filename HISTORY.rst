@@ -6,7 +6,7 @@ History
 .. to_doc
 
 ---------------------
-0.2.0.dev0
+0.2.0 (2025-04-10)
 ---------------------
 
 * Allow creating tes client with extra headers (e.g. for auth) thanks to @BorisYourich.
