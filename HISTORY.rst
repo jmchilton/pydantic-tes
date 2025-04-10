@@ -9,7 +9,8 @@ History
 0.2.0.dev0
 ---------------------
 
-    
+* Allow creating tes client with extra headers (e.g. for auth) thanks to @BorisYourich.
+* Fixes for running against tesk thanks to @mvdbeek.
 
 ---------------------
 0.1.5 (2022-10-06)
