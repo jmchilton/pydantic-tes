@@ -28,9 +28,13 @@ def raise_for_status(response):
 
 
 class TesClient:
-    def __init__(self, url: str):
+    def __init__(self, url: str, headers: dict = None):
         self._url = url
         self._headers = {"Content-Type": "application/json"}
+
+        # Merge optional headers
+        if headers:
+            self._headers.update(headers)
 
     def create_task(self, task: TesTask) -> TesCreateTaskResponse:
         url = self._build_url("tasks")
