@@ -24,37 +24,37 @@ class TesExecutor(BaseModel):
     image: str = Field(
         ...,
         description="Name of the container image. The string will be passed as the image\nargument to the containerization run command. Examples:\n   - `ubuntu`\n   - `quay.io/aptible/ubuntu`\n   - `gcr.io/my-org/my-image`\n   - `myregistryhost:5000/fedora/httpd:version1.0`",
-        example="ubuntu:20.04",
+        json_schema_extra={"example": "ubuntu:20.04"},
     )
     command: List[str] = Field(
         ...,
         description='A sequence of program arguments to execute, where the first argument\nis the program to execute (i.e. argv). Example:\n```\n{\n  "command" : ["/bin/md5", "/data/file1"]\n}\n```',
-        example=["/bin/md5", "/data/file1"],
+        json_schema_extra={"example": ["/bin/md5", "/data/file1"]},
     )
     workdir: Optional[str] = Field(
         None,
         description="The working directory that the command will be executed in.\nIf not defined, the system will default to the directory set by\nthe container image.",
-        example="/data/",
+        json_schema_extra={"example": "/data/"},
     )
     stdin: Optional[str] = Field(
         None,
         description='Path inside the container to a file which will be piped\nto the executor\'s stdin. This must be an absolute path. This mechanism\ncould be used in conjunction with the input declaration to process\na data file using a tool that expects STDIN.\n\nFor example, to get the MD5 sum of a file by reading it into the STDIN\n```\n{\n  "command" : ["/bin/md5"],\n  "stdin" : "/data/file1"\n}\n```',
-        example="/data/file1",
+        json_schema_extra={"example": "/data/file1"},
     )
     stdout: Optional[str] = Field(
         None,
         description='Path inside the container to a file where the executor\'s\nstdout will be written to. Must be an absolute path. Example:\n```\n{\n  "stdout" : "/tmp/stdout.log"\n}\n```',
-        example="/tmp/stdout.log",
+        json_schema_extra={"example": "/tmp/stdout.log"},
     )
     stderr: Optional[str] = Field(
         None,
         description='Path inside the container to a file where the executor\'s\nstderr will be written to. Must be an absolute path. Example:\n```\n{\n  "stderr" : "/tmp/stderr.log"\n}\n```',
-        example="/tmp/stderr.log",
+        json_schema_extra={"example": "/tmp/stderr.log"},
     )
     env: Optional[Dict[str, str]] = Field(
         None,
         description='Enviromental variables to set within the container. Example:\n```\n{\n  "env" : {\n    "ENV_CONFIG_PATH" : "/data/config.file",\n    "BLASTDB" : "/data/GRC38",\n    "HMMERDB" : "/data/hmmer"\n  }\n}\n```',
-        example={"BLASTDB": "/data/GRC38", "HMMERDB": "/data/hmmer"},
+        json_schema_extra={"example": {"BLASTDB": "/data/GRC38", "HMMERDB": "/data/hmmer"}},
     )
 
 
@@ -62,12 +62,12 @@ class TesExecutorLog(BaseModel):
     start_time: Optional[str] = Field(
         None,
         description="Time the executor started, in RFC 3339 format.",
-        example="2020-10-02T10:00:00-05:00",
+        json_schema_extra={"example": "2020-10-02T10:00:00-05:00"},
     )
     end_time: Optional[str] = Field(
         None,
         description="Time the executor ended, in RFC 3339 format.",
-        example="2020-10-02T11:00:00-05:00",
+        json_schema_extra={"example": "2020-10-02T11:00:00-05:00"},
     )
     stdout: Optional[str] = Field(
         None,
@@ -91,12 +91,12 @@ class TesInput(BaseModel):
     url: Optional[str] = Field(
         None,
         description='REQUIRED, unless "content" is set.\n\nURL in long term storage, for example:\n - s3://my-object-store/file1\n - gs://my-bucket/file2\n - file:///path/to/my/file\n - /path/to/my/file',
-        example="s3://my-object-store/file1",
+        json_schema_extra={"example": "s3://my-object-store/file1"},
     )
     path: str = Field(
         ...,
         description="Path of the file inside the container.\nMust be an absolute path.",
-        example="/data/file1",
+        json_schema_extra={"example": "/data/file1"},
     )
     type: TesFileType
     content: Optional[str] = Field(
@@ -133,39 +133,39 @@ class TesOutputFileLog(BaseModel):
     size_bytes: str = Field(
         ...,
         description="Size of the file in bytes. Note, this is currently coded as a string\nbecause official JSON doesn't support int64 numbers.",
-        example=["1024"],
+        json_schema_extra={"example": ["1024"]},
     )
 
 
 class TesResources(BaseModel):
     cpu_cores: Optional[int] = Field(
-        None, description="Requested number of CPUs", example=4
+        None, description="Requested number of CPUs", json_schema_extra={"example": 4}
     )
     preemptible: Optional[bool] = Field(
         None,
         description="Define if the task is allowed to run on preemptible compute instances,\nfor example, AWS Spot. This option may have no effect when utilized\non some backends that don't have the concept of preemptible jobs.",
-        example=False,
+        json_schema_extra={"example": False},
     )
     ram_gb: Optional[float] = Field(
-        None, description="Requested RAM required in gigabytes (GB)", example=8
+        None, description="Requested RAM required in gigabytes (GB)", json_schema_extra={"example": 8}
     )
     disk_gb: Optional[float] = Field(
-        None, description="Requested disk size in gigabytes (GB)", example=40
+        None, description="Requested disk size in gigabytes (GB)", json_schema_extra={"example": 40}
     )
     zones: Optional[List[str]] = Field(
         None,
         description="Request that the task be run in these compute zones. How this string\nis utilized will be dependent on the backend system. For example, a\nsystem based on a cluster queueing system may use this string to define\npriorty queue to which the job is assigned.",
-        example="us-west-1",
+        json_schema_extra={"example": "us-west-1"},
     )
     backend_parameters: Optional[Dict[str, str]] = Field(
         None,
         description='Key/value pairs for backend configuration.\nServiceInfo shall return a list of keys that a backend supports.\nKeys are case insensitive.\nIt is expected that clients pass all runtime or hardware requirement key/values\nthat are not mapped to existing tesResources properties to backend_parameters.\nBackends shall log system warnings if a key is passed that is unsupported.\nBackends shall not store or return unsupported keys if included in a task.\nIf backend_parameters_strict equals true,\nbackends should fail the task if any key/values are unsupported, otherwise,\nbackends should attempt to run the task\nIntended uses include VM size selection, coprocessor configuration, etc.\nExample:\n```\n{\n  "backend_parameters" : {\n    "VmSize" : "Standard_D64_v3"\n  }\n}\n```',
-        example={"VmSize": "Standard_D64_v3"},
+        json_schema_extra={"example": {"VmSize": "Standard_D64_v3"}},
     )
     backend_parameters_strict: Optional[bool] = Field(
         False,
         description="If set to true, backends should fail the task if any backend_parameters \nkey/values are unsupported, otherwise, backends should attempt to run the task",
-        example=False,
+        json_schema_extra={"example": False},
     )
 
 
@@ -177,17 +177,17 @@ class ServiceType(BaseModel):
     group: str = Field(
         ...,
         description="Namespace in reverse domain name format. Use `org.ga4gh` for implementations compliant with official GA4GH specifications. For services with custom APIs not standardized by GA4GH, or implementations diverging from official GA4GH specifications, use a different namespace (e.g. your organization's reverse domain name).",
-        example="org.ga4gh",
+        json_schema_extra={"example": "org.ga4gh"},
     )
     artifact: str = Field(
         ...,
         description="Name of the API or GA4GH specification implemented. Official GA4GH types should be assigned as part of standards approval process. Custom artifacts are supported.",
-        example="beacon",
+        json_schema_extra={"example": "beacon"},
     )
     version: str = Field(
         ...,
         description="Version of the API or specification. GA4GH specifications use semantic versioning.",
-        example="1.0.0",
+        json_schema_extra={"example": "1.0.0"},
     )
 
 
@@ -195,12 +195,12 @@ class Organization(BaseModel):
     name: str = Field(
         ...,
         description="Name of the organization responsible for the service",
-        example="My organization",
+        json_schema_extra={"example": "My organization"},
     )
     url: AnyUrl = Field(
         ...,
         description="URL of the website of the organization (RFC 3986 format)",
-        example="https://example.com",
+        json_schema_extra={"example": "https://example.com"},
     )
 
 
@@ -208,18 +208,18 @@ class Service(BaseModel):
     id: str = Field(
         ...,
         description="Unique ID of this service. Reverse domain name notation is recommended, though not required. The identifier should attempt to be globally unique so it can be used in downstream aggregator services e.g. Service Registry.",
-        example="org.ga4gh.myservice",
+        json_schema_extra={"example": "org.ga4gh.myservice"},
     )
     name: str = Field(
         ...,
         description="Name of this service. Should be human readable.",
-        example="My project",
+        json_schema_extra={"example": "My project"},
     )
     type: ServiceType
     description: Optional[str] = Field(
         None,
         description="Description of the service. Should be human readable and provide information about the service.",
-        example="This service provides...",
+        json_schema_extra={"example": "This service provides..."},
     )
     organization: Organization = Field(
         ..., description="Organization providing the service"
@@ -227,32 +227,32 @@ class Service(BaseModel):
     contactUrl: Optional[AnyUrl] = Field(
         None,
         description="URL of the contact for the provider of this service, e.g. a link to a contact form (RFC 3986 format), or an email (RFC 2368 format).",
-        example="mailto:support@example.com",
+        json_schema_extra={"example": "mailto:support@example.com"},
     )
     documentationUrl: Optional[AnyUrl] = Field(
         None,
         description="URL of the documentation of this service (RFC 3986 format). This should help someone learn how to use your service, including any specifics required to access data, e.g. authentication.",
-        example="https://docs.myservice.example.com",
+        json_schema_extra={"example": "https://docs.myservice.example.com"},
     )
     createdAt: Optional[datetime] = Field(
         None,
         description="Timestamp describing when the service was first deployed and available (RFC 3339 format)",
-        example="2019-06-04T12:58:19Z",
+        json_schema_extra={"example": "2019-06-04T12:58:19Z"},
     )
     updatedAt: Optional[datetime] = Field(
         None,
         description="Timestamp describing when the service was last updated (RFC 3339 format)",
-        example="2019-06-04T12:58:19Z",
+        json_schema_extra={"example": "2019-06-04T12:58:19Z"},
     )
     environment: Optional[str] = Field(
         None,
         description="Environment the service is running in. Use this to distinguish between production, development and testing/staging deployments. Suggested values are prod, test, dev, staging. However this is advised and not enforced.",
-        example="test",
+        json_schema_extra={"example": "test"},
     )
     version: str = Field(
         ...,
         description="Version of the service being described. Semantic versioning is recommended, but other identifiers, such as dates or commit hashes, are also allowed. The version should be changed whenever the service is updated.",
-        example="1.0.0",
+        json_schema_extra={"example": "1.0.0"},
     )
 
 
@@ -273,17 +273,17 @@ class TesTaskLog(BaseModel):
     metadata: Optional[Dict[str, str]] = Field(
         None,
         description="Arbitrary logging metadata included by the implementation.",
-        example={"host": "worker-001", "slurmm_id": 123456},
+        json_schema_extra={"example": {"host": "worker-001", "slurmm_id": 123456}},
     )
     start_time: Optional[str] = Field(
         None,
         description="When the task started, in RFC 3339 format.",
-        example="2020-10-02T10:00:00-05:00",
+        json_schema_extra={"example": "2020-10-02T10:00:00-05:00"},
     )
     end_time: Optional[str] = Field(
         None,
         description="When the task ended, in RFC 3339 format.",
-        example="2020-10-02T11:00:00-05:00",
+        json_schema_extra={"example": "2020-10-02T11:00:00-05:00"},
     )
     outputs: List[TesOutputFileLog] = Field(
         ...,
@@ -296,22 +296,22 @@ class TesTaskLog(BaseModel):
 
 
 class TesServiceType(ServiceType):
-    artifact: Artifact = Field(..., example="tes")
+    artifact: Artifact = Field(..., json_schema_extra={"example": "tes"})
 
 
 class TesServiceInfo(Service):
     storage: Optional[List[str]] = Field(
         None,
         description="Lists some, but not necessarily all, storage locations supported\nby the service.",
-        example=[
+        json_schema_extra={"example": [
             "file:///path/to/local/funnel-storage",
             "s3://ohsu-compbio-funnel/storage",
-        ],
+        ]},
     )
     tesResources_backend_parameters: Optional[List[str]] = Field(
         None,
         description="Lists all tesResources.backend_parameters keys supported \nby the service",
-        example=["VmSize"],
+        json_schema_extra={"example": ["VmSize"]},
     )
     type: TesServiceType
 
@@ -320,7 +320,7 @@ class TesTask(BaseModel):
     id: Optional[str] = Field(
         None,
         description="Task identifier assigned by the server.",
-        example="job-0012345",
+        json_schema_extra={"example": "job-0012345"},
     )
     state: Optional[TesState] = None
     name: Optional[str] = Field(None, description="User-provided task name.")
@@ -331,18 +331,18 @@ class TesTask(BaseModel):
     inputs: Optional[List[TesInput]] = Field(
         None,
         description="Input files that will be used by the task. Inputs will be downloaded\nand mounted into the executor container as defined by the task request\ndocument.",
-        example=[{"url": "s3://my-object-store/file1", "path": "/data/file1"}],
+        json_schema_extra={"example": [{"url": "s3://my-object-store/file1", "path": "/data/file1"}]},
     )
     outputs: Optional[List[TesOutput]] = Field(
         None,
         description="Output files.\nOutputs will be uploaded from the executor container to long-term storage.",
-        example=[
+        json_schema_extra={"example": [
             {
                 "path": "/data/outfile",
                 "url": "s3://my-object-store/outfile-1",
                 "type": "FILE",
             }
-        ],
+        ]},
     )
     resources: Optional[TesResources] = None
     executors: List[TesExecutor] = Field(
@@ -352,12 +352,12 @@ class TesTask(BaseModel):
     volumes: Optional[List[str]] = Field(
         None,
         description="Volumes are directories which may be used to share data between\nExecutors. Volumes are initialized as empty directories by the\nsystem when the task starts and are mounted at the same path\nin each Executor.\n\nFor example, given a volume defined at `/vol/A`,\nexecutor 1 may write a file to `/vol/A/exec1.out.txt`, then\nexecutor 2 may read from that file.\n\n(Essentially, this translates to a `docker run -v` flag where\nthe container path is the same for each executor).",
-        example=["/vol/A/"],
+        json_schema_extra={"example": ["/vol/A/"]},
     )
     tags: Optional[Dict[str, str]] = Field(
         None,
         description='A key-value map of arbitrary tags. These can be used to store meta-data\nand annotations about a task. Example:\n```\n{\n  "tags" : {\n      "WORKFLOW_ID" : "cwl-01234",\n      "PROJECT_GROUP" : "alice-lab"\n  }\n}\n```',
-        example={"WORKFLOW_ID": "cwl-01234", "PROJECT_GROUP": "alice-lab"},
+        json_schema_extra={"example": {"WORKFLOW_ID": "cwl-01234", "PROJECT_GROUP": "alice-lab"}},
     )
     logs: Optional[List[TesTaskLog]] = Field(
         None,
@@ -366,7 +366,7 @@ class TesTask(BaseModel):
     creation_time: Optional[str] = Field(
         None,
         description="Date + time the task was created, in RFC 3339 format.\nThis is set by the system, not the client.",
-        example="2020-10-02T10:00:00-05:00",
+        json_schema_extra={"example": "2020-10-02T10:00:00-05:00"},
     )
 
 
