@@ -1,4 +1,6 @@
 from typing import (
+    Dict,
+    Optional,
     Union,
 )
 from urllib.parse import urljoin
@@ -28,7 +30,7 @@ def raise_for_status(response):
 
 
 class TesClient:
-    def __init__(self, url: str, headers: dict = None):
+    def __init__(self, url: str, headers: Optional[Dict] = None):
         self._url = url
         self._headers = {"Content-Type": "application/json"}
 
