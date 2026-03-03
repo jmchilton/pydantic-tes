@@ -1,7 +1,7 @@
 # Default tests run with make test and make quick-tests
 TESTS?=test
 # Default environment for make tox
-ENV?=py37
+ENV?=py38
 # Extra arguments supplied to tox command
 ARGS?=
 # Location of virtualenv used for development.
@@ -55,7 +55,7 @@ flake8: ## check style using flake8 for current Python (faster than lint)
 	$(IN_VENV) flake8 --max-complexity 11 $(SOURCE_DIR)  $(TEST_DIR)
 
 lint: ## check style using tox and flake8 for Python 3.7 and Python 3.10
-	$(IN_VENV) tox -e py37-lint && tox -e py310-lint
+	$(IN_VENV) tox -e py38-lint && tox -e py314-lint
 
 lint-readme: dist ## check README formatting for PyPI
 	$(IN_VENV) twine check dist/*
