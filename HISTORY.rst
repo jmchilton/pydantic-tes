@@ -11,6 +11,8 @@ History
 
 * Drop deprecated pydantic V1 syntax, require pydantic>=2 (thanks to @mvdbeek, `PR #6 <https://github.com/jmchilton/pydantic-tes/pull/6>`__).
 * Migrate to Trusted Publishing (PyPI OIDC) for automated releases.
+* Migrate Makefile to use uv when available.
+* Replace distutils.version with packaging.version in release scripts.
 
 
 
