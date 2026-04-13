@@ -40,7 +40,7 @@ class TesClient:
 
     def create_task(self, task: TesTask) -> TesCreateTaskResponse:
         url = self._build_url("tasks")
-        response = requests.post(url, data=task.json(), headers=self._headers)
+        response = requests.post(url, data=task.model_dump_json(), headers=self._headers)
         raise_for_status(response)
         return TesCreateTaskResponse(**response.json())
 
