@@ -9,7 +9,10 @@ History
 0.4.0.dev0
 ---------------------
 
-    
+* Drop deprecated pydantic V1 syntax, require pydantic>=2 (thanks to @mvdbeek, `PR #6 <https://github.com/jmchilton/pydantic-tes/pull/6>`__).
+* Migrate to Trusted Publishing (PyPI OIDC) for automated releases.
+
+
 
 ---------------------
 0.3.0 (2026-03-03)
