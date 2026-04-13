@@ -6,7 +6,7 @@ History
 .. to_doc
 
 ---------------------
-0.4.0.dev0
+0.4.0 (2026-04-13)
 ---------------------
 
 * Drop deprecated pydantic V1 syntax, require pydantic>=2 (thanks to @mvdbeek, `PR #6 <https://github.com/jmchilton/pydantic-tes/pull/6>`__).
