@@ -86,10 +86,10 @@ dist: clean ## package
 	ls -l dist
 
 commit-version: ## Update version and history, commit.
-	$(RUN) DEV_RELEASE=$(DEV_RELEASE) python $(BUILD_SCRIPTS_DIR)/commit_version.py $(SOURCE_DIR) $(VERSION)
+	$(RUN) env DEV_RELEASE=$(DEV_RELEASE) python $(BUILD_SCRIPTS_DIR)/commit_version.py $(SOURCE_DIR) $(VERSION)
 
 new-version: ## Mint a new version
-	$(RUN) DEV_RELEASE=$(DEV_RELEASE) python $(BUILD_SCRIPTS_DIR)/new_version.py $(SOURCE_DIR) $(VERSION)
+	$(RUN) env DEV_RELEASE=$(DEV_RELEASE) python $(BUILD_SCRIPTS_DIR)/new_version.py $(SOURCE_DIR) $(VERSION)
 
 release-local: commit-version new-version
 
