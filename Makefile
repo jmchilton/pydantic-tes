@@ -9,8 +9,12 @@ VENV?=.venv
 # Source virtualenv to execute command (flake8, sphinx, twine, etc...)
 IN_VENV=if [ -f $(VENV)/bin/activate ]; then . $(VENV)/bin/activate; fi;
 # Use uv for commands if available, otherwise fall back to venv
-UV_EXISTS=$(shell command -v uv 2>/dev/null)
-RUN=if [ -n "$(UV_EXISTS)" ]; then uv run; else $(IN_VENV); fi;
+UV_EXISTS := $(shell command -v uv 2>/dev/null)
+ifneq ($(UV_EXISTS),)
+RUN := uv run
+else
+RUN := $(IN_VENV)
+endif
 # TODO: add this upstream as a remote if it doesn't already exist.
 UPSTREAM?=origin
 SOURCE_DIR?=pydantictes
