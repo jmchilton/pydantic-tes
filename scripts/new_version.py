@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # Modify version...
 import os
+import os.path
 import re
 import subprocess
 import sys
-from distutils.version import StrictVersion
+
+from packaging.version import Version
 
 
 DEV_RELEASE = os.environ.get("DEV_RELEASE", None) == "1"
@@ -15,12 +17,8 @@ def main(argv):
     source_dir = argv[1]
     version = argv[2]
     if not DEV_RELEASE:
-        old_version = StrictVersion(version)
-        old_version_tuple = old_version.version
-        new_version_tuple = list(old_version_tuple)
-        new_version_tuple[1] = old_version_tuple[1] + 1
-        new_version_tuple[2] = 0
-        new_version = ".".join(map(str, new_version_tuple))
+        old_version = Version(version)
+        new_version = f"{old_version.major}.{old_version.minor + 1}.0"
         new_dev_version = 0
     else:
         dev_version = re.compile(r'dev([\d]+)').search(version).group(1)
@@ -46,12 +44,12 @@ def main(argv):
     mod_path = os.path.join(PROJECT_DIRECTORY, source_dir, "__init__.py")
     mod = open(mod_path).read()
     if not DEV_RELEASE:
-        mod = re.sub(r"__version__ = \"[\d\.]+\"", f"__version__ = \"{new_version}.dev0\"", mod, 1)
+        mod = re.sub(r'__version__ = "[\d\.]+"', f'__version__ = "{new_version}.dev0"', mod, 1)
     else:
         mod = re.sub(f"dev{dev_version}", f"dev{new_dev_version}", mod, 1)
-    mod = open(mod_path, "w").write(mod)
+    open(mod_path, "w").write(mod)
     shell(["git", "commit", "-m", f"Starting work on {new_version}",
-           "HISTORY.rst", f"{source_dir}/__init__.py"])
+           "HISTORY.rst", os.path.join(source_dir, "__init__.py")])
 
 
 def shell(cmds, **kwds):
